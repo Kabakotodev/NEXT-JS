@@ -1,0 +1,137 @@
+############################ FRONTEND TYPESCRIPT ################################
+
+Avant de passer, merci de modifier d'adapter certains fichiers aux besoins:
+- J'utilise le fichier Layout.tsx ci-dessous comme Sidebar, donc merci d'y apporter les mise a jours necessaires ainsi que App.jsx ci-dessous,
+- Toujours dans le Layout.jsx, il faut recuperer et afficher: prenom, nom, suername et role de l'utilisateur connecté
+- Me preciser ou et commentrouver les routes API admin du backend
+
+#### ADMIN CHANGE password
+Rectificatif.
+Je veux maintenant permettre a l'ADMIN, a partir de la page Gestion Utilisateurs:
+ 1) De changer de mot de passe des utilisateurs.
+  Pour changer le password d'utilisateur, il faut afficher dans le formulaire, en readonly, le username de l'utilisateur dont le password va etre changer
+ 2) D'activer ou de desactiver un utilisateur,
+ 3) D'editer les infos d'un utilisateur (a ce niveau, possibilite d'editer toutes les infos sauf le password),
+ 4) De supprimer un utilisateur ou des utilisateurs
+
+
+ Je vous demande d'oublier toutes les requetes ci-dessous er repartir a partir d'ici.
+ Je veux maintenant permettre a l'ADMIN, a partir de la page AdminGestionUsers:
+ 1) De changer de mot de passe des utilisateurs.
+  Pour changer le password d'utilisateur, il faut afficher dans le formulaire, en readonly, le username de l'utilisateur dont le password va etre changer
+ 
+   A partir du menu (Layout.tsx), il clique sur 'Changer mon Password' pour acceder a la page UserChangePassword.tsx pour modifier son mot de passe.
+
+############################ EN DESSUS FRONTEND TYPESCRIPT ################################
+
+
+################## BACKEND CRUD VOLS #####################
+En se basant sur l'entité vols ci-dessous, merci de me proposer un code source en backend avec spring pour faire le CRUD de la table vols.
+Table Vols(id, codeVol, descVol, provenanceDestination, zone('ARRIVEE', 'DEPART', 'TRANSIT'), compagnieId)
+- L'attribut zone prend les valeurs ('ARRIVEE', 'DEPART', 'TRANSIT'), sans Enum
+- L'attribut compagnieId est une clé étrangere de la table compganies qui est en relation avec cette table vols,
+ 
+2) En plus du CRUD,
+ - Prevoir une recherche avec sur tous les attributs de la table vols,
+ - Le nombre total de vols,
+ - Le nombre de vols par zone,
+ - Une suppression multi ligne,
+ - Regrouper et afficher les vols par compagnieId (les vols qui ont la meme compganieId)
+NB:
+ - Utiliser Mysql sur windows sans docker compose pour le moment
+ - Prevoir aussi un test par Postman (Collection et Environnement)
+
+// Class Vol
+package kabakoto.PKFlux.entities;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+import kabakoto.PkgAuth.entity.User;
+
+@Entity
+@Table(name = "vols")
+public class Vol {
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(nullable=true, length=30)
+    private String codeVol = "NON RENSEIGNE";
+
+    @Column(columnDefinition="TEXT")
+    private String descVol;
+
+    @Column(nullable=true, length=120)
+    private String provenanceDestination = "NON RENSEIGNE";
+
+    @Column(nullable=true, length=20)
+    private String zone = "NON RENSEIGNE";
+
+    @ManyToOne
+    @JoinColumn(name = "compagnieId", nullable = false)
+    private Compagnie compagnie;
+
+    //
+}
+
+################## FRONTEND CRUD VOLS #####################
+Adapter le frontend avec react vite au CRUD backend ci-dessus de la table vols.
+Table Vols(id, codeVol, descVol, provenanceDestination, zone('ARRIVEE', 'DEPART', 'TRANSIT'), compagnieId)
+- L'attribut zone prend les valeurs ('ARRIVEE', 'DEPART', 'TRANSIT'), sans Enum
+- L'attribut compagnieId est une clé étrangere de la table compganies(id, nomCompagnie, sigleCompagnie, nationaliteCompagnie, descCompagnie) qui est en relation avec cette table vols,
+ 
+1) Dans le formulaire ajout et modification, 
+- L'attribut compagnieId se recupere par select option en affichant tous les 'nomCompagnie' de la table compagnies par recuperer l'id de la table compagnies correspondante,
+- L'attribut zone prend les valeurs ('ARRIVEE', 'DEPART', 'TRANSIT'), sans Enum
+2) Dans le tableau des donnees,
+- Prevoir une recherche1 par 3 selects options ('codeVol', 'zone', 'nomCompagnie') ainsi que le nombre de resultat trouvé apres chaque recherche,
+ - Prevoir une recherche2 avec sur tous les attributs de la table vols,
+ - Le nombre total de vols, dans un bagde en bas du tableau des donnees
+ - Le nombre de vols par zone, dans un bagde en bas du tableau des donnees
+ - Une suppression multi ligne , dans un bagde en bas du tableau des donnees
+ - Prevoir en bas de de la table, dans des badges le nombre d'enregistrement total de la table vols
+ 
+ NB: Le tout en maintenant le meme design sur le fichier Vols.tsx acctuel
+
+ ################################## FRONTEND AUTH ##################33
+ Je veux passer au frontend, pour modifier et ou ameliorer certaines pages, afin de les adapter au backend. 
+En se basant aux fichier forntend ci-dessous, merci:
+1) Modifier la pages/Register.jsx et de l'adapter au backend:
+ - Dans le formulaire Register.jsx,
+ - Dans le formulaire, l'attribut role est recuperé par option select du nom_role depuis la table roles(localhost:8085/api/roles),
+ - Dans le formulaire, l'attribut service_id(clé étrangers de la table services) est recuperé par option select (en afficher dans le select les nom_service depuis la table services: localhost:8085/api/services) ,
+- Supprimer l'attribut email,
+- Ajouter un password confirm
+- Ajouter un messade d'alerte en cas de succes ou d'echec,
+- Se rediger vers la page Login.jsx en cas de succes
+- Actuelle Table users(id, prenom, nom, contact, role, service_id, username, password,  active, password_last_changed(datetime:current_timestamp()), force_password_change(tinyint(1)))
+
+
+ ####################### CRUD FLUX BACKEND  #########################
+Vous etes un developpeur senior fullstack Spring boot et react, vite, js,
+En se basant sur l'entité Flux ci-dessous, merci de me proposer un code source avec spring boot (le backend), pour faire le CRUD de la 
+table flux(id, dateFlux(format = "yyyy-MM-dd'T'HH:mm:ss"), vol_id, zone('ARRIVEE', 'DEPART', 'TRANSIT'), nbrePaxSn, nbrePaxAutre, periode ('MATIN', 'APRES MIDI'), user_id, createdAt, updateAt).
+Pas de Class Enum
+NB: 
+ - Pour faire le CRUD:
+   . l'attribut user_id (clé étrangere dans la table flux) correspond a l'id de l'utilisateur connecté ; 
+   . l'attribut 'vol_id' est une clé etrangere de la table vols qui est en relation avec la table flux
+ - Prevoir une recherche avec sur tous les attributs de la table flux,
+ - Une suppression multi ligne,
+ - Le total (nbrePaxSn + nbrePaxAutre) par periode,
+ - Le total (nbrePaxSn + nbrePaxAutre) par zone,
+ - Le total (nbrePaxSn + nbrePaxAutre) par dateFlux,
+ - Le total (nbrePaxSn + nbrePaxAutre) par nomVol,
+ Le total (nbrePaxSn + nbrePaxAutre) par codeVol,
+ - Le total (nbrePaxSn + nbrePaxAutre) par user_id,
+ - Utiliser Mysql sur windows sans docker compose pour le moment
+ - Prevoir aussi un test par Postman (Collection et Environnement)
+NB: 
+- Endpoint Flux : localhost:8085/api/flux
+- Endpoint Vols : localhost:8085/api/vols,
+ La table users est liéé avec la table flux par la clé étrangere userId
+ La table flux est liéé avec la table vols par la clé étrangere volId
+- Pas de Class Enum
+
+
+
+

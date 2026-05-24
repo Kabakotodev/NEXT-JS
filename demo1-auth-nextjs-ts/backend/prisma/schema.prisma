@@ -1,0 +1,89 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Role {
+  id        Int     @id @default(autoincrement())
+  nom_role  String  @unique
+  desc_role String?
+  users     User[]
+}
+
+model Service {
+  id                    Int     @id @default(autoincrement())
+  nom_service           String  @unique
+  sigle_service         String?
+  desc_service          String?
+  contact_service       String?
+  nom_chef_service      String?
+  statut_chef_service   String?
+  grade_chef_service    String?
+  fonction_chef_service String?
+  users                 User[]
+}
+
+model User {
+  id                 Int     @id @default(autoincrement())
+  prenom             String
+  nom                String
+  contact            String?
+  username           String  @unique
+  password           String
+  actif              Boolean @default(true)
+  mustChangePassword Boolean @default(false)
+
+  serviceId Int
+  service   Service @relation(fields: [serviceId], references: [id])
+
+  refreshTokens RefreshToken[] // ✅ OBLIGATOIRE
+  role          Role?          @relation(fields: [roleId], references: [id])
+  roleId        Int?
+
+  // 🔥 RELATION INVERSE OBLIGATOIRE
+  auditLogs AuditLog[]
+
+  // 🔥 Relations audit user
+  performedActions AuditActionUser[] @relation("PerformedBy")
+  targetedActions  AuditActionUser[] @relation("TargetUser")
+}
+
+model AuditLog {
+  id          Int      @id @default(autoincrement())
+  action      String
+  performedBy Int
+  targetUser  Int?
+  description String?
+  ipAddress   String?
+  userAgent   String?
+  createdAt   DateTime @default(now())
+
+  admin User @relation(fields: [performedBy], references: [id])
+}
+
+model AuditActionUser {
+  id            Int      @id @default(autoincrement())
+  action        String
+  performedById Int
+  targetUserId  Int?
+  description   String?
+  ipAddress     String?
+  userAgent     String?
+  createdAt     DateTime @default(now())
+
+  performedBy User  @relation("PerformedBy", fields: [performedById], references: [id])
+  targetUser  User? @relation("TargetUser", fields: [targetUserId], references: [id])
+}
+
+model RefreshToken {
+  id        Int      @id @default(autoincrement())
+  token     String   @unique
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+  expiresAt DateTime
+}
