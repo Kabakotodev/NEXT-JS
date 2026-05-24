@@ -1,0 +1,140 @@
+En se referent au fichiers ci-dessous, proposer moi un frontend CRUD des tables personnel
+
+// ###################################################################
+
+model Service {
+  id                  Int           @id @default(autoincrement())
+  nomService          String
+  sigleService        String
+  descService         String
+  contactService      String?
+  adresseService      String?
+  statutChefService   String
+  nomChefService      String
+  gradeChefService    String
+  fonctionChefService String
+  contactChefService  String
+  serviceParentId     Int
+  serviceParent       ServiceParent @relation(fields: [serviceParentId], references: [id])
+  personnels          Personnel[]
+
+  users User[]
+}
+//
+model Personnel {
+  id                Int     @id @default(autoincrement())
+  matricule         String  @unique
+  prenom_personnel  String
+  nom_personnel     String
+  adresse_personnel String
+  contact_personnel String
+  image_personnel   String?
+  service_id        Int
+  service           Service @relation(fields: [service_id], references: [id])
+}
+
+// ###################################################################
+// controllers/service.controller.ts
+import * as service from '../services/service.service';
+import { Request, Response } from 'express';
+
+export const getAll = async (_: Request, res: Response) => {
+  const data = await service.getAll();
+  res.json(data);
+};
+
+export const getById = async (req: Request, res: Response) => {
+  const data = await service.getById(Number(req.params.id));
+  res.json(data);
+};
+
+export const create = async (req: Request, res: Response) => {
+  const data = await service.create(req.body);
+  res.json(data);
+};
+
+export const update = async (req: Request, res: Response) => {
+  const data = await service.update(Number(req.params.id), req.body);
+  res.json(data);
+};
+
+export const remove = async (req: Request, res: Response) => {
+  const data = await service.remove(Number(req.params.id));
+  res.json(data);
+};
+
+// ###################################################################
+// controllers/personnel.controller.ts
+import * as service from '../services/personnel.service';
+import { Request, Response } from 'express';
+
+export const getAll = async (_: Request, res: Response) => {
+  const data = await service.getAll();
+  res.json(data);
+};
+
+export const getById = async (req: Request, res: Response) => {
+  const data = await service.getById(Number(req.params.id));
+  res.json(data);
+};
+
+export const create = async (req: Request, res: Response) => {
+  const data = await service.create(req.body);
+  res.json(data);
+};
+
+export const update = async (req: Request, res: Response) => {
+  const data = await service.update(Number(req.params.id), req.body);
+  res.json(data);
+};
+
+export const remove = async (req: Request, res: Response) => {
+  const data = await service.remove(Number(req.params.id));
+  res.json(data);
+};
+
+// ###################################################################
+// server.ts
+import express from 'express';
+import cors from 'cors';
+
+import roleRoutes from './routes/role.routes';
+import serviceParentRoutes from './routes/serviceParent.routes';
+import serviceRoutes from './routes/service.routes';
+import personnelRoutes from './routes/personnel.routes';
+//
+import documentRoutes from './routes/document.routes'
+import nationaliteRoutes from './routes/nationalite.routes'
+import categorieRoutes from './routes/categorie.routes'
+import regimeRoutes from './routes/regime.routes'
+import visaRoutes from './routes/visa.routes';
+import adminRoutes from './routes/admin.routes';
+import authRoutes from './routes/auth.routes';
+import userRoutes from "./routes/user.routes";
+
+
+const app = express();
+app.use(cors());
+app.use(express.json());
+
+app.use('/api/roles', roleRoutes);
+app.use('/api/service-parents', serviceParentRoutes);
+app.use('/api/services', serviceRoutes);
+app.use('/api/personnels', personnelRoutes);
+//
+app.use('/api/documents',documentRoutes)
+app.use('/api/nationalites',nationaliteRoutes)
+app.use('/api/categories',categorieRoutes)
+app.use('/api/regimes',regimeRoutes)
+
+app.use("/api/visa", visaRoutes);
+
+app.use("/api/admin", adminRoutes);
+
+app.use('/api/auth', authRoutes);
+
+app.use("/api/users", userRoutes);
+
+app.listen(5000, () => {
+  console.log('Server running on http://localhost:5000');
+});

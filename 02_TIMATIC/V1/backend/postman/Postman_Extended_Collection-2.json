@@ -1,0 +1,148 @@
+{
+  "info": {
+    "name": "MVC EXTENDED CRUD",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "GET All documents",
+      "request": {
+        "method": "GET",
+        "url": "{{base_url}}/api/documents"
+      }
+    },
+    {
+      "name": "GET documents by ID",
+      "request": {
+        "method": "GET",
+        "url": "{{base_url}}/api/documents/1"
+      }
+    },
+    {
+      "name": "POST documents",
+      "request": {
+        "method": "POST",
+        "url": "{{base_url}}/api/documents"
+      }
+    },
+    {
+      "name": "PUT documents",
+      "request": {
+        "method": "PUT",
+        "url": "{{base_url}}/api/documents/1"
+      }
+    },
+    {
+      "name": "DELETE documents",
+      "request": {
+        "method": "DELETE",
+        "url": "{{base_url}}/api/documents/1"
+      }
+    },
+    {
+      "name": "GET All nationalites",
+      "request": {
+        "method": "GET",
+        "url": "{{base_url}}/api/nationalites"
+      }
+    },
+    {
+      "name": "GET nationalites by ID",
+      "request": {
+        "method": "GET",
+        "url": "{{base_url}}/api/nationalites/1"
+      }
+    },
+    {
+      "name": "POST nationalites",
+      "request": {
+        "method": "POST",
+        "url": "{{base_url}}/api/nationalites"
+      }
+    },
+    {
+      "name": "PUT nationalites",
+      "request": {
+        "method": "PUT",
+        "url": "{{base_url}}/api/nationalites/1"
+      }
+    },
+    {
+      "name": "DELETE nationalites",
+      "request": {
+        "method": "DELETE",
+        "url": "{{base_url}}/api/nationalites/1"
+      }
+    },
+    {
+      "name": "GET All categories",
+      "request": {
+        "method": "GET",
+        "url": "{{base_url}}/api/categories"
+      }
+    },
+    {
+      "name": "GET categories by ID",
+      "request": {
+        "method": "GET",
+        "url": "{{base_url}}/api/categories/1"
+      }
+    },
+    {
+      "name": "POST categories",
+      "request": {
+        "method": "POST",
+        "url": "{{base_url}}/api/categories"
+      }
+    },
+    {
+      "name": "PUT categories",
+      "request": {
+        "method": "PUT",
+        "url": "{{base_url}}/api/categories/1"
+      }
+    },
+    {
+      "name": "DELETE categories",
+      "request": {
+        "method": "DELETE",
+        "url": "{{base_url}}/api/categories/1"
+      }
+    },
+    {
+      "name": "GET All regimes",
+      "request": {
+        "method": "GET",
+        "url": "{{base_url}}/api/regimes"
+      }
+    },
+    {
+      "name": "GET regimes by ID",
+      "request": {
+        "method": "GET",
+        "url": "{{base_url}}/api/regimes/1"
+      }
+    },
+    {
+      "name": "POST regimes",
+      "request": {
+        "method": "POST",
+        "url": "{{base_url}}/api/regimes"
+      }
+    },
+    {
+      "name": "PUT regimes",
+      "request": {
+        "method": "PUT",
+        "url": "{{base_url}}/api/regimes/1"
+      }
+    },
+    {
+      "name": "DELETE regimes",
+      "request": {
+        "method": "DELETE",
+        "url": "{{base_url}}/api/regimes/1"
+      }
+    }
+  ]
+}

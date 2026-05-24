@@ -1,0 +1,148 @@
+{
+  "info": {
+    "name": "MVC Prisma Backend FULL",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "GET All roles",
+      "request": {
+        "method": "GET",
+        "url": "{{base_url}}/api/roles"
+      }
+    },
+    {
+      "name": "GET roles by ID",
+      "request": {
+        "method": "GET",
+        "url": "{{base_url}}/api/roles/1"
+      }
+    },
+    {
+      "name": "POST roles",
+      "request": {
+        "method": "POST",
+        "url": "{{base_url}}/api/roles"
+      }
+    },
+    {
+      "name": "PUT roles",
+      "request": {
+        "method": "PUT",
+        "url": "{{base_url}}/api/roles/1"
+      }
+    },
+    {
+      "name": "DELETE roles",
+      "request": {
+        "method": "DELETE",
+        "url": "{{base_url}}/api/roles/1"
+      }
+    },
+    {
+      "name": "GET All service-parents",
+      "request": {
+        "method": "GET",
+        "url": "{{base_url}}/api/service-parents"
+      }
+    },
+    {
+      "name": "GET service-parents by ID",
+      "request": {
+        "method": "GET",
+        "url": "{{base_url}}/api/service-parents/1"
+      }
+    },
+    {
+      "name": "POST service-parents",
+      "request": {
+        "method": "POST",
+        "url": "{{base_url}}/api/service-parents"
+      }
+    },
+    {
+      "name": "PUT service-parents",
+      "request": {
+        "method": "PUT",
+        "url": "{{base_url}}/api/service-parents/1"
+      }
+    },
+    {
+      "name": "DELETE service-parents",
+      "request": {
+        "method": "DELETE",
+        "url": "{{base_url}}/api/service-parents/1"
+      }
+    },
+    {
+      "name": "GET All services",
+      "request": {
+        "method": "GET",
+        "url": "{{base_url}}/api/services"
+      }
+    },
+    {
+      "name": "GET services by ID",
+      "request": {
+        "method": "GET",
+        "url": "{{base_url}}/api/services/1"
+      }
+    },
+    {
+      "name": "POST services",
+      "request": {
+        "method": "POST",
+        "url": "{{base_url}}/api/services"
+      }
+    },
+    {
+      "name": "PUT services",
+      "request": {
+        "method": "PUT",
+        "url": "{{base_url}}/api/services/1"
+      }
+    },
+    {
+      "name": "DELETE services",
+      "request": {
+        "method": "DELETE",
+        "url": "{{base_url}}/api/services/1"
+      }
+    },
+    {
+      "name": "GET All personnels",
+      "request": {
+        "method": "GET",
+        "url": "{{base_url}}/api/personnels"
+      }
+    },
+    {
+      "name": "GET personnels by ID",
+      "request": {
+        "method": "GET",
+        "url": "{{base_url}}/api/personnels/1"
+      }
+    },
+    {
+      "name": "POST personnels",
+      "request": {
+        "method": "POST",
+        "url": "{{base_url}}/api/personnels"
+      }
+    },
+    {
+      "name": "PUT personnels",
+      "request": {
+        "method": "PUT",
+        "url": "{{base_url}}/api/personnels/1"
+      }
+    },
+    {
+      "name": "DELETE personnels",
+      "request": {
+        "method": "DELETE",
+        "url": "{{base_url}}/api/personnels/1"
+      }
+    }
+  ]
+}

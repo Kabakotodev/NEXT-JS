@@ -1,0 +1,192 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Role {
+  id       Int    @id @default(autoincrement())
+  nomRole  String
+  descRole String
+
+  users User[]
+}
+
+model ServiceParent {
+  id                        Int       @id @default(autoincrement())
+  nomServiceParent          String
+  sigleServiceParent        String
+  descServiceParent         String
+  contactServiceParent      String?
+  adresseServiceParent      String?
+  statutChefServiceParent   String
+  nomChefServiceParent      String
+  gradeChefServiceParent    String
+  fonctionChefServiceParent String
+  contactChefServiceParent  String
+  services                  Service[]
+}
+
+model Service {
+  id                  Int           @id @default(autoincrement())
+  nomService          String
+  sigleService        String
+  descService         String
+  contactService      String?
+  adresseService      String?
+  statutChefService   String
+  nomChefService      String
+  gradeChefService    String
+  fonctionChefService String
+  contactChefService  String
+  serviceParentId     Int
+  serviceParent       ServiceParent @relation(fields: [serviceParentId], references: [id])
+  personnels          Personnel[]
+
+  users User[]
+}
+
+model Personnel {
+  id                Int     @id @default(autoincrement())
+  matricule         String  @unique
+  prenom_personnel  String
+  nom_personnel     String
+  adresse_personnel String
+  contact_personnel String
+  image_personnel   String?
+  service_id        Int
+  service           Service @relation(fields: [service_id], references: [id])
+}
+
+model Regime {
+  id          Int    @id @default(autoincrement())
+  nomRegime   String
+  descRegime  String
+  objetRegime String @db.LongText
+
+  documents    Document[]    @relation("RegimeDocuments")
+  categories   Categorie[]   @relation("RegimeCategories")
+  nationalites Nationalite[] @relation("RegimeNationalites")
+}
+
+model Document {
+  id            Int    @id @default(autoincrement())
+  nomDocument   String @unique
+  sigleDocument String @unique
+  descDocument  String
+
+  regimes        Regime[]            @relation("RegimeDocuments") // ✅ AJOUT
+  relations      CategorieRelation[]
+  visaSearchLogs VisaSearchLog[]
+}
+
+model Categorie {
+  id             Int    @id @default(autoincrement())
+  nomCategorie   String
+  descCategorie  String
+  objetCategorie String @db.LongText
+
+  regimes   Regime[]            @relation("RegimeCategories") // ✅ AJOUT
+  relations CategorieRelation[]
+}
+
+model Nationalite {
+  id            Int    @id @default(autoincrement())
+  nomPays       String @unique
+  codePays      String @unique
+  nationaliteFr String
+  nationaliteEn String
+
+  regimes        Regime[]            @relation("RegimeNationalites")
+  relations      CategorieRelation[]
+  visaSearchLogs VisaSearchLog[]
+}
+
+model CategorieRelation {
+  id Int @id @default(autoincrement())
+
+  categorieId   Int
+  documentId    Int
+  nationaliteId Int
+
+  categorie   Categorie   @relation(fields: [categorieId], references: [id])
+  document    Document    @relation(fields: [documentId], references: [id])
+  nationalite Nationalite @relation(fields: [nationaliteId], references: [id])
+
+  @@unique([documentId, nationaliteId])
+}
+
+model VisaSearchLog {
+  id            Int @id @default(autoincrement())
+  nationaliteId Int
+  documentId    Int
+
+  resultFound Boolean
+  route       String
+  ipAddress   String?
+  userAgent   String?
+
+  city        String?
+  countryName String?
+  countryCode String?
+
+  createdAt DateTime @default(now())
+
+  nationalite Nationalite @relation(fields: [nationaliteId], references: [id])
+  document    Document    @relation(fields: [documentId], references: [id])
+}
+
+model User {
+  id                  Int      @id @default(autoincrement())
+  prenom              String
+  nom                 String
+  contact             String?
+  username            String   @unique
+  password            String
+  active              Boolean  @default(true)
+  passwordLastChanged DateTime @default(now())
+  forcePasswordChange Boolean  @default(false)
+
+  failedLoginAttempts Int      @default(0)
+  lockUntil           DateTime?
+
+  roleId    Int
+  serviceId Int
+
+  role    Role    @relation(fields: [roleId], references: [id])
+  service Service @relation(fields: [serviceId], references: [id])
+
+  refreshTokens RefreshToken[]
+  
+  auditLogs AuditLog[]
+
+}
+
+model RefreshToken {
+  id        Int      @id @default(autoincrement())
+  token     String   // stocké hashé
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id])
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  revoked   Boolean  @default(false)
+}
+
+model AuditLog {
+  id          Int      @id @default(autoincrement())
+  userId      Int?
+  user        User?    @relation(fields: [userId], references: [id])
+
+  action      String   // LOGIN, LOGIN_FAILED, CREATE_USER, DELETE_USER...
+  method      String   // GET, POST, PUT, DELETE
+  route       String
+  status      String   // SUCCESS | FAILED
+  ipAddress   String?
+  userAgent   String?
+  details     String?  @db.Text
+
+  createdAt   DateTime @default(now())
+}

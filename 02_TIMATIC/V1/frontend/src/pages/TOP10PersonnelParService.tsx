@@ -1,0 +1,565 @@
+import Header from "@/components/layout/Header"
+import Footer from "@/components/layout/Footer"
+
+import { Badge } from "@/components/ui/badge"
+import { Input } from "@/components/ui/input"
+
+import {
+Select,
+SelectContent,
+SelectItem,
+SelectTrigger,
+SelectValue
+} from "@/components/ui/select"
+
+import DataTable from "@/components/DataTable"
+
+import { useState,useEffect,useMemo } from "react"
+
+import axios from "axios"
+
+import { notifyError } from "../utils/toast"
+
+import { Eye } from "lucide-react"
+import { useNavigate } from "react-router-dom"
+
+import {
+BarChart,
+Bar,
+XAxis,
+YAxis,
+Tooltip,
+PieChart,
+Pie,
+Cell,
+ResponsiveContainer
+} from "recharts"
+
+const API_PERSONNEL="http://localhost:5000/api/personnels"
+const API_SERVICE="http://localhost:5000/api/services"
+
+const COLORS=[
+"#2563eb",
+"#16a34a",
+"#dc2626",
+"#ea580c",
+"#7c3aed",
+"#0891b2",
+"#9333ea",
+"#be185d"
+]
+
+interface ServiceType{
+id:number
+nomService:string
+sigleService:string
+}
+
+interface PersonnelType{
+id:number
+matricule:string
+prenom_personnel:string
+nom_personnel:string
+adresse_personnel:string
+contact_personnel:string
+image_personnel?:string
+service_id:number
+service?:ServiceType
+}
+
+const TOP10PersonnelParService=()=>{
+
+const [personnels,setPersonnels]=useState<PersonnelType[]>([])
+const [services,setServices]=useState<ServiceType[]>([])
+
+const [search,setSearch]=useState("")
+const [serviceFilter,setServiceFilter]=useState("all")
+
+const navigate = useNavigate()
+
+// ================= API =================
+
+const fetchPersonnels=async()=>{
+
+try{
+
+const res=await axios.get(API_PERSONNEL)
+setPersonnels(res.data)
+
+}catch{
+
+notifyError("Impossible de charger les personnels")
+
+}
+
+}
+
+const fetchServices=async()=>{
+
+const res=await axios.get(API_SERVICE)
+setServices(res.data)
+
+}
+
+useEffect(()=>{
+
+fetchPersonnels()
+fetchServices()
+
+},[])
+
+
+// ================= SEARCH + FILTER =================
+
+const filtered=useMemo(()=>{
+
+return personnels.filter((p)=>{
+
+const searchMatch=
+
+p.nom_personnel.toLowerCase().includes(search.toLowerCase()) ||
+p.prenom_personnel.toLowerCase().includes(search.toLowerCase()) ||
+p.matricule.toLowerCase().includes(search.toLowerCase())
+
+const serviceMatch=
+serviceFilter==="all" ||
+String(p.service_id)===serviceFilter
+
+return searchMatch && serviceMatch
+
+})
+
+},[personnels,search,serviceFilter])
+
+
+// ================= GROUP BY SERVICE =================
+
+const grouped=useMemo(()=>{
+
+const groups:Record<string,PersonnelType[]>={}
+
+filtered.forEach((p)=>{
+
+const serviceName=p.service?.nomService || "Non défini"
+
+if(!groups[serviceName]) groups[serviceName]=[]
+
+groups[serviceName].push(p)
+
+})
+
+return groups
+
+},[filtered])
+
+
+// ================= STATS =================
+
+const stats=useMemo(()=>{
+
+const groups:Record<string,number>={}
+
+personnels.forEach((p)=>{
+
+const s=p.service?.nomService || "Non défini"
+
+if(!groups[s]) groups[s]=0
+
+groups[s]++
+
+})
+
+return Object.keys(groups).map((key)=>({
+
+service:key,
+total:groups[key]
+
+}))
+
+},[personnels])
+
+
+// ================= TOP SERVICES =================
+
+const topServices = useMemo(()=>{
+
+return [...stats]
+.sort((a,b)=>b.total-a.total)
+.slice(0,10)
+
+},[stats])
+
+
+// ================= GLOBAL STATS =================
+
+const totalPersonnels = personnels.length
+
+
+// ================= AVATAR =================
+
+const avatar=(p:PersonnelType)=>{
+
+if(p.image_personnel){
+
+return(
+
+<img
+src={p.image_personnel}
+className="w-10 h-10 rounded-full object-cover"
+/>
+
+)
+
+}
+
+const initials=(p.prenom_personnel?.[0]||"")+(p.nom_personnel?.[0]||"")
+
+return(
+
+<div className="w-10 h-10 rounded-full bg-blue-600 text-white flex items-center justify-center text-sm font-semibold">
+
+{initials.toUpperCase()}
+
+</div>
+
+)
+
+}
+
+
+// ================= TABLE =================
+
+const columns=[
+
+{
+header:"Photo",
+cell:({row}:any)=>avatar(row.original)
+},
+
+{
+accessorKey:"matricule",
+header:"Matricule"
+},
+
+{
+header:"Nom complet",
+cell:({row}:any)=>{
+
+const p=row.original
+return `${p.prenom_personnel} ${p.nom_personnel}`
+
+}
+},
+
+{
+header:"Service",
+cell:({row}:any)=>{
+
+const s=row.original.service
+
+if(!s) return "-"
+
+return(
+
+<div className="flex gap-2">
+
+<Badge variant="outline">
+{s.sigleService}
+</Badge>
+
+<span>{s.nomService}</span>
+
+</div>
+
+)
+
+}
+},
+
+{
+accessorKey:"contact_personnel",
+header:"Contact"
+},
+
+{
+header:"Actions",
+cell:({row}:any)=>{
+
+const personnel=row.original
+
+return(
+
+<button
+onClick={()=>navigate(`/personnel/${personnel.id}`)}
+className="p-1 hover:bg-muted rounded text-blue-600"
+>
+<Eye size={18}/>
+</button>
+
+)
+
+}
+}
+
+]
+
+
+// ================= UI =================
+
+return(
+
+<div className="min-h-screen flex flex-col">
+
+<Header/>
+
+<main className="flex-1 pt-20">
+
+<section className="py-16">
+
+<div className="container mx-auto max-w-6xl space-y-12">
+
+<h1 className="text-2xl font-bold text-center">
+
+Dashboard RH - Personnels par Service
+
+</h1>
+
+
+{/* STAT CARDS */}
+
+<div className="grid md:grid-cols-3 gap-6">
+
+<div className="card-elevated p-6 text-center">
+
+<h3 className="text-sm text-muted-foreground">
+Total personnels
+</h3>
+
+<p className="text-3xl font-bold">
+{totalPersonnels}
+</p>
+
+</div>
+
+
+<div className="card-elevated p-6 text-center">
+
+<h3 className="text-sm text-muted-foreground">
+Nombre de services
+</h3>
+
+<p className="text-3xl font-bold">
+{services.length}
+</p>
+
+</div>
+
+
+<div className="card-elevated p-6 text-center">
+
+<h3 className="text-sm text-muted-foreground">
+Moyenne personnels / service
+</h3>
+
+<p className="text-3xl font-bold">
+{services.length ? Math.round(totalPersonnels/services.length) : 0}
+</p>
+
+</div>
+
+</div>
+
+
+{/* BAR CHART */}
+
+<div className="card-elevated p-8">
+
+<h2 className="font-semibold mb-4">
+
+Personnels par service
+
+</h2>
+
+<ResponsiveContainer width="100%" height={300}>
+
+<BarChart data={stats}>
+
+<XAxis dataKey="service"/>
+<YAxis/>
+<Tooltip/>
+
+<Bar dataKey="total" fill="#2563eb"/>
+
+</BarChart>
+
+</ResponsiveContainer>
+
+</div>
+
+
+{/* PIE CHART */}
+
+<div className="card-elevated p-8">
+
+<h2 className="font-semibold mb-4">
+
+Répartition des personnels
+
+</h2>
+
+<ResponsiveContainer width="100%" height={300}>
+
+<PieChart>
+
+<Pie
+data={stats}
+dataKey="total"
+nameKey="service"
+outerRadius={120}
+label
+>
+
+{stats.map((_,index)=>(
+<Cell key={index} fill={COLORS[index % COLORS.length]}/>
+))}
+
+</Pie>
+
+</PieChart>
+
+</ResponsiveContainer>
+
+</div>
+
+
+{/* TOP SERVICES */}
+
+<div className="card-elevated p-8">
+
+<h2 className="font-semibold mb-4">
+
+Top 10 services
+
+</h2>
+
+<table className="w-full text-sm">
+
+<thead>
+
+<tr className="border-b">
+<th className="p-2 text-left">Service</th>
+<th className="p-2 text-left">Personnels</th>
+</tr>
+
+</thead>
+
+<tbody>
+
+{topServices.map((s,index)=>(
+
+<tr key={index} className="border-b">
+
+<td className="p-2">
+{s.service}
+</td>
+
+<td className="p-2">
+<Badge>{s.total}</Badge>
+</td>
+
+</tr>
+
+))}
+
+</tbody>
+
+</table>
+
+</div>
+
+
+{/* FILTER */}
+
+<div className="flex gap-4 justify-center">
+
+<Input
+placeholder="Rechercher personnel..."
+value={search}
+onChange={(e)=>setSearch(e.target.value)}
+className="max-w-xs"
+/>
+
+<Select
+value={serviceFilter}
+onValueChange={setServiceFilter}
+>
+
+<SelectTrigger className="w-[250px]">
+
+<SelectValue placeholder="Filtrer par service"/>
+
+</SelectTrigger>
+
+<SelectContent>
+
+<SelectItem value="all">
+
+Tous les services
+
+</SelectItem>
+
+{services.map((s)=>(
+
+<SelectItem key={s.id} value={String(s.id)}>
+{s.sigleService} - {s.nomService}
+</SelectItem>
+
+))}
+
+</SelectContent>
+
+</Select>
+
+</div>
+
+
+{/* TABLES PAR SERVICE */}
+
+{Object.entries(grouped).map(([serviceName,personnels])=>(
+
+<div key={serviceName} className="card-elevated p-8">
+
+<div className="flex justify-between mb-6">
+
+<h2 className="text-xl font-semibold">
+{serviceName}
+</h2>
+
+<Badge>{personnels.length}</Badge>
+
+</div>
+
+<DataTable
+columns={columns}
+data={personnels}
+/>
+
+</div>
+
+))}
+
+</div>
+
+</section>
+
+</main>
+
+<Footer/>
+
+</div>
+
+)
+
+}
+
+export default TOP10PersonnelParService

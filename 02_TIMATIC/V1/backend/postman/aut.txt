@@ -1,0 +1,16 @@
+# POST: localhost:5000/api/auth/login
+{
+  "username": "user",
+  "password": "password"
+}
+
+# POST: localhost:5000/api/auth/register
+{
+  "prenom": "Kaba",
+  "nom": "KOTO",
+  "contact": "770123456",
+  "username": "user",
+  "password": "password",
+  "roleId": 3,
+  "serviceId": 1
+}

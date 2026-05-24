@@ -1,0 +1,229 @@
+{
+  "info": {
+    "name": "MVC Prisma FULL CRUD",
+    "_postman_id": "mvc-prisma-full-collection",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "GET All roles",
+      "request": {
+        "method": "GET",
+        "url": "{{base_url}}/api/roles"
+      }
+    },
+    {
+      "name": "GET roles by ID",
+      "request": {
+        "method": "GET",
+        "url": "{{base_url}}/api/roles/1"
+      }
+    },
+    {
+      "name": "POST roles",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"nomRole\": \"ADMIN\",\n  \"descRole\": \"Administrateur du syst\\u00e8me\"\n}"
+        },
+        "url": "{{base_url}}/api/roles"
+      }
+    },
+    {
+      "name": "PUT roles",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"nomRole\": \"ADMIN\",\n  \"descRole\": \"Administrateur du syst\\u00e8me\"\n}"
+        },
+        "url": "{{base_url}}/api/roles/1"
+      }
+    },
+    {
+      "name": "DELETE roles",
+      "request": {
+        "method": "DELETE",
+        "url": "{{base_url}}/api/roles/1"
+      }
+    },
+    {
+      "name": "GET All service-parents",
+      "request": {
+        "method": "GET",
+        "url": "{{base_url}}/api/service-parents"
+      }
+    },
+    {
+      "name": "GET service-parents by ID",
+      "request": {
+        "method": "GET",
+        "url": "{{base_url}}/api/service-parents/1"
+      }
+    },
+    {
+      "name": "POST service-parents",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"nomServiceParent\": \"Direction G\\u00e9n\\u00e9rale\",\n  \"sigleServiceParent\": \"DG\",\n  \"descServiceParent\": \"Service central\",\n  \"contactServiceParent\": \"770000000\",\n  \"adresseServiceParent\": \"Dakar\",\n  \"statutChefServiceParent\": \"Mr\",\n  \"nomChefServiceParent\": \"Diallo\",\n  \"gradeChefServiceParent\": \"Colonel\",\n  \"fonctionChefServiceParent\": \"Directeur\",\n  \"contactChefServiceParent\": \"771111111\"\n}"
+        },
+        "url": "{{base_url}}/api/service-parents"
+      }
+    },
+    {
+      "name": "PUT service-parents",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"nomServiceParent\": \"Direction G\\u00e9n\\u00e9rale\",\n  \"sigleServiceParent\": \"DG\",\n  \"descServiceParent\": \"Service central\",\n  \"contactServiceParent\": \"770000000\",\n  \"adresseServiceParent\": \"Dakar\",\n  \"statutChefServiceParent\": \"Mr\",\n  \"nomChefServiceParent\": \"Diallo\",\n  \"gradeChefServiceParent\": \"Colonel\",\n  \"fonctionChefServiceParent\": \"Directeur\",\n  \"contactChefServiceParent\": \"771111111\"\n}"
+        },
+        "url": "{{base_url}}/api/service-parents/1"
+      }
+    },
+    {
+      "name": "DELETE service-parents",
+      "request": {
+        "method": "DELETE",
+        "url": "{{base_url}}/api/service-parents/1"
+      }
+    },
+    {
+      "name": "GET All services",
+      "request": {
+        "method": "GET",
+        "url": "{{base_url}}/api/services"
+      }
+    },
+    {
+      "name": "GET services by ID",
+      "request": {
+        "method": "GET",
+        "url": "{{base_url}}/api/services/1"
+      }
+    },
+    {
+      "name": "POST services",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"nomService\": \"Service Informatique\",\n  \"sigleService\": \"SI\",\n  \"descService\": \"Gestion IT\",\n  \"contactService\": \"772222222\",\n  \"adresseService\": \"Dakar\",\n  \"statutChefService\": \"Mr\",\n  \"nomChefService\": \"Ba\",\n  \"gradeChefService\": \"Commandant\",\n  \"fonctionChefService\": \"Chef IT\",\n  \"contactChefService\": \"773333333\",\n  \"serviceParentId\": 1\n}"
+        },
+        "url": "{{base_url}}/api/services"
+      }
+    },
+    {
+      "name": "PUT services",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"nomService\": \"Service Informatique\",\n  \"sigleService\": \"SI\",\n  \"descService\": \"Gestion IT\",\n  \"contactService\": \"772222222\",\n  \"adresseService\": \"Dakar\",\n  \"statutChefService\": \"Mr\",\n  \"nomChefService\": \"Ba\",\n  \"gradeChefService\": \"Commandant\",\n  \"fonctionChefService\": \"Chef IT\",\n  \"contactChefService\": \"773333333\",\n  \"serviceParentId\": 1\n}"
+        },
+        "url": "{{base_url}}/api/services/1"
+      }
+    },
+    {
+      "name": "DELETE services",
+      "request": {
+        "method": "DELETE",
+        "url": "{{base_url}}/api/services/1"
+      }
+    },
+    {
+      "name": "GET All personnels",
+      "request": {
+        "method": "GET",
+        "url": "{{base_url}}/api/personnels"
+      }
+    },
+    {
+      "name": "GET personnels by ID",
+      "request": {
+        "method": "GET",
+        "url": "{{base_url}}/api/personnels/1"
+      }
+    },
+    {
+      "name": "POST personnels",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"matricule\": \"MAT001\",\n  \"prenom_personnel\": \"Abdoulaye\",\n  \"nom_personnel\": \"Diallo\",\n  \"adresse_personnel\": \"Dakar\",\n  \"contact_personnel\": \"774444444\",\n  \"image_personnel\": \"image.jpg\",\n  \"service_id\": 1\n}"
+        },
+        "url": "{{base_url}}/api/personnels"
+      }
+    },
+    {
+      "name": "PUT personnels",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"matricule\": \"MAT001\",\n  \"prenom_personnel\": \"Abdoulaye\",\n  \"nom_personnel\": \"Diallo\",\n  \"adresse_personnel\": \"Dakar\",\n  \"contact_personnel\": \"774444444\",\n  \"image_personnel\": \"image.jpg\",\n  \"service_id\": 1\n}"
+        },
+        "url": "{{base_url}}/api/personnels/1"
+      }
+    },
+    {
+      "name": "DELETE personnels",
+      "request": {
+        "method": "DELETE",
+        "url": "{{base_url}}/api/personnels/1"
+      }
+    }
+  ]
+}

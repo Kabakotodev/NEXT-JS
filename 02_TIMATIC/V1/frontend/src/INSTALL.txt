@@ -1,0 +1,464 @@
+npm install react-toastify
+npm install axios
+
+npm install jquery bootstrap summernote
+
+npm list jquery
+
+npm uninstall jquery
+
+npm install jquery@3.7.1
+
+npm install @tanstack/react-table
+
+npm install dayjs
+npm uninstall dayjs
+
+npm install bcryptjs
+
+npm install jsonwebtoken
+
+npm install -D @types/jsonwebtoken
+
+npm install react-hook-form zod @hookform/resolvers
+
+npm install recharts xlsx jspdf html2canvas
+
+npm install qrcode.react
+
+npm install recharts
+
+
+############# CATEGORIE A
+Le titulaire de ce document n'est pas soumis au visa. 
+Il est admins à pénétrer sur le territoire sénégalais sur présentation:
+ - d'un passeport en cours de validité ou d'une carte d'identité nationale biométrique CEDEAO ou d'un laissez-passer;
+ - d'un certificat international de vaccination exigé par les règlements sanitaires;
+
+##### CATEGORIE A - Mauritanie
+Le titulaire de ce document n'est pas soumis au visa. 
+Il est admins à pénétrer sur le territoire sénégalais sur présentation:
+ - d'un passeport en cours de validité ou d'une carte d'identité nationale biométrique;
+ - d'un certificat international de vaccination exigé par les règlements sanitaires;
+
+##### CATEGORIE A - Djibouti et Rwanda
+Le titulaire de ce document n'est pas soumis au visa. 
+Il est admins à pénétrer sur le territoire sénégalais sur présentation:
+ - d'un passeport en cours de validité;
+ - d'un certificat international de vaccination exigé par les règlements sanitaires;
+
+##### CATEGORIE A - UE
+Le titulaire de ce document n'est pas soumis au visa. 
+Il est admin à pénétrer sur le territoire sénégalais sur présentation:
+ - d'un passeport en cours de validité;
+ - d'une garantie de rapatriement ou d'un billet aller-retour ou d'un titre de voyage pour une destination exterieure au Sénégal;
+ - d'un certificat international de vaccination exigé par les règlements sanitaires;
+
+
+############ CATEGORIE B
+Document soumis au visa gratuit à l'arrivée:
+Le titulaire de ce document est soumis à un visa gratuit à  l'arrivée
+Il est admins à  pénétrer sur le territoire sénégalais sur présentation:
+ - d'un passeport d'une validite d'au moins 6 mois,
+ - d'une garantie de rapatriement,
+ - d'un billet aller-retour ou circulaire ou d'un titre de voyage pour une destination exterieure au Sénégal,
+ - d'un certification international de vaccination exigé par les reglements sanitaire
+
+ ######
+ Le titulaire de ce document de voyage est soumis à un visa gratuit à l'arrivée, sans consultation préalable 
+Il est admis à  pénétrer sur le territoire sénégalais sur présentation:
+ - d'un passeport d'une validité d'au moins 6 mois,
+ - d'un visa d'entrée gratuit ou d'une carte d'identité pour étranger. A défaut de cela, un visa gratuit, sans consultation préalable lui sera apposé, au point d'entrée;
+ - d'une garantie de rapatriement ou d'un billet aller-retour ou d'un titre de voyage pour une destination extérieure au Sénégal,
+ - d'un certification international de vaccination exigé par les règlements sanitaires
+
+
+############# CATEGORIE C
+Document soumis a un visa obligatoire:
+Le titulaire de ce document est soumis au visa obligatoire.
+Il est admis à pénétrer sur le territoire sénégalais sur présentation:
+ - d'un passeport d'une validité d'au moins 6 mois,
+ - d'un visa d'entrée gratuit ou d'une lettre de visa dont la délivrance est obligatoirement soumis à l'autorisation préalable du Ministère de l'Intérieur,
+ - d'une garantie de rapatriement, d'un billet aller-retour ou circulaire ou d'un titre de voyage pour une destination extérieure au Sénégal,
+ - d'un certification international de vaccination exigé par les reglements sanitaire
+
+
+#################
+En se basant sur les page VisaSearchForm.tsx et Index.tsx ci-dessous (sans casser le design), merci de me fournir un code source du backend et d'adapter la page VisaSearchForm.tsx au criteres suivantes:, 
+Permettre de faire des recherches pour vérifiez vos conditions d'accès:
+Cette recherche doit se baser sur deux criteres sélectionnez votre pays d'origine et le type de document pour connaître les conditions d'entrée au Sénégal par option select a partir des champs:
+- Pays d'émission du document ou nomPays de la table nationalite correspondant a l'attribut nationaliteId de la table categorierelation;
+- Type de document de voyage ou nomDocument de la table document correspondant a l'attribut documentId de la table categorierelation;
+Comme resultat, afficher les donnees des attributs descCategorie et objetCategorie de la table categorie (grace a categorieId de la table categorierelation) dans la section result de la page VisaSearchForm.tsx
+
+// Dans schema.prisma
+model Document {
+  id            Int      @id @default(autoincrement())
+  nomDocument   String   @unique
+  sigleDocument String   @unique
+  descDocument  String
+
+  regimes       Regime[] @relation("RegimeDocuments")  // ✅ AJOUT
+  relations     CategorieRelation[]
+}
+
+model Categorie {
+  id              Int      @id @default(autoincrement())
+  nomCategorie    String
+  descCategorie   String
+  objetCategorie  String   @db.LongText
+
+  regimes         Regime[] @relation("RegimeCategories") // ✅ AJOUT
+  relations       CategorieRelation[]
+}
+
+model Nationalite {
+  id            Int      @id @default(autoincrement())
+  nomPays       String   @unique
+  codePays      String   @unique
+  nationaliteFr String
+  nationaliteEn String
+
+  regimes       Regime[] @relation("RegimeNationalites") // ✅ AJOUT
+  relations     CategorieRelation[]
+}
+
+model CategorieRelation {
+  id            Int @id @default(autoincrement())
+
+  categorieId   Int
+  documentId    Int
+  nationaliteId Int
+
+  categorie     Categorie   @relation(fields: [categorieId], references: [id])
+  document      Document    @relation(fields: [documentId], references: [id])
+  nationalite   Nationalite @relation(fields: [nationaliteId], references: [id])
+
+  @@unique([documentId, nationaliteId])
+}
+
+// Index.tsx (page d'accueil accessible par: <Route path="/" element={<Index />} />)
+import Header from "@/components/layout/Header";
+import Footer from "@/components/layout/Footer";
+import HeroSection from "@/components/home/HeroSection";
+import VisaSearchForm from "@/components/search/VisaSearchForm";
+import ServicesSection from "@/components/home/ServicesSection";
+import CTASection from "@/components/home/CTASection";
+
+const Index = () => {
+  return (
+    <div className="min-h-screen flex flex-col">
+      <Header />
+      <main className="flex-1 pt-16 lg:pt-20">
+        <HeroSection />
+        <VisaSearchForm />
+        <ServicesSection />
+        <CTASection />
+      </main>
+      <Footer />
+    </div>
+  );
+};
+
+export default Index;
+
+// VisaSearchForm.tsx
+import { useState } from "react";
+import { Search, FileText, Globe, Loader2, CheckCircle, XCircle, AlertCircle } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { cn } from "@/lib/utils";
+
+// Types de documents de voyage
+const travelDocuments = [
+  { id: "passport_ordinary", label: "Passeport Ordinaire" },
+  { id: "passport_service", label: "Passeport de Service" },
+  { id: "passport_diplomatic", label: "Passeport Diplomatique" },
+  { id: "passport_emergency", label: "Passeport d'Urgence" },
+  { id: "id_card", label: "Carte d'Identité" },
+  { id: "travel_doc_refused", label: "Document de Voyage pour Refusé" },
+];
+
+// Liste complète des pays (abrégée pour l'exemple)
+const countries = [
+  { id: "fr", name: "France" },
+  { id: "us", name: "États-Unis" },
+  { id: "gb", name: "Royaume-Uni" },
+  { id: "de", name: "Allemagne" },
+  { id: "es", name: "Espagne" },
+  { id: "it", name: "Italie" },
+  { id: "pt", name: "Portugal" },
+  { id: "be", name: "Belgique" },
+  { id: "ch", name: "Suisse" },
+  { id: "ca", name: "Canada" },
+  { id: "cn", name: "Chine" },
+  { id: "jp", name: "Japon" },
+  { id: "kr", name: "Corée du Sud" },
+  { id: "in", name: "Inde" },
+  { id: "br", name: "Brésil" },
+  { id: "mx", name: "Mexique" },
+  { id: "ar", name: "Argentine" },
+  { id: "au", name: "Australie" },
+  { id: "nz", name: "Nouvelle-Zélande" },
+  { id: "za", name: "Afrique du Sud" },
+  { id: "ma", name: "Maroc" },
+  { id: "dz", name: "Algérie" },
+  { id: "tn", name: "Tunisie" },
+  { id: "eg", name: "Égypte" },
+  { id: "ng", name: "Nigéria" },
+  { id: "gh", name: "Ghana" },
+  { id: "ci", name: "Côte d'Ivoire" },
+  { id: "ml", name: "Mali" },
+  { id: "gn", name: "Guinée" },
+  { id: "gm", name: "Gambie" },
+  { id: "mr", name: "Mauritanie" },
+  { id: "ne", name: "Niger" },
+  { id: "bf", name: "Burkina Faso" },
+  { id: "tg", name: "Togo" },
+  { id: "bj", name: "Bénin" },
+  { id: "ru", name: "Russie" },
+  { id: "ua", name: "Ukraine" },
+  { id: "pl", name: "Pologne" },
+  { id: "tr", name: "Turquie" },
+  { id: "sa", name: "Arabie Saoudite" },
+  { id: "ae", name: "Émirats Arabes Unis" },
+].sort((a, b) => a.name.localeCompare(b.name, 'fr'));
+
+interface SearchResult {
+  visaRequired: boolean;
+  visaType?: string;
+  maxStayDays?: number;
+  additionalDocuments?: string[];
+  remarks?: string;
+}
+
+export const VisaSearchForm = () => {
+  const [selectedCountry, setSelectedCountry] = useState<string>("");
+  const [selectedDocument, setSelectedDocument] = useState<string>("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [result, setResult] = useState<SearchResult | null>(null);
+  const [hasSearched, setHasSearched] = useState(false);
+
+  const handleSearch = async () => {
+    if (!selectedCountry || !selectedDocument) return;
+
+    setIsLoading(true);
+    setHasSearched(true);
+
+    // Simulation d'appel API - à remplacer par un vrai appel backend
+    await new Promise((resolve) => setTimeout(resolve, 1200));
+
+    // Résultats simulés selon le pays (pour démonstration)
+    const mockResults: Record<string, SearchResult> = {
+      fr: {
+        visaRequired: false,
+        maxStayDays: 90,
+        remarks: "Les ressortissants français sont exemptés de visa pour les séjours touristiques de moins de 90 jours.",
+      },
+      us: {
+        visaRequired: true,
+        visaType: "Visa de court séjour",
+        maxStayDays: 30,
+        additionalDocuments: ["Attestation d'hébergement", "Justificatif de ressources financières", "Billet retour"],
+        remarks: "Le visa doit être obtenu auprès de l'ambassade du Sénégal avant le départ.",
+      },
+      ci: {
+        visaRequired: false,
+        maxStayDays: 90,
+        remarks: "Libre circulation dans l'espace CEDEAO pour les ressortissants ivoiriens.",
+      },
+    };
+
+    setResult(mockResults[selectedCountry] || {
+      visaRequired: true,
+      visaType: "Visa de court séjour",
+      maxStayDays: 30,
+      additionalDocuments: ["Passeport valide 6 mois", "Photo d'identité", "Formulaire de demande"],
+      remarks: "Veuillez contacter l'ambassade du Sénégal dans votre pays pour plus d'informations.",
+    });
+
+    setIsLoading(false);
+  };
+
+  const resetSearch = () => {
+    setSelectedCountry("");
+    setSelectedDocument("");
+    setResult(null);
+    setHasSearched(false);
+  };
+
+  return (
+    <section id="recherche" className="py-16 lg:py-24 bg-muted/50">
+      <div className="container mx-auto px-4">
+        <div className="max-w-4xl mx-auto">
+          {/* Section Header */}
+          <div className="text-center mb-10">
+            <h2 className="font-display text-3xl lg:text-4xl font-bold text-foreground mb-4">
+              Vérifiez vos conditions d'accès
+            </h2>
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+              Sélectionnez votre pays d'origine et votre type de document pour connaître les conditions d'entrée au Sénégal.
+            </p>
+          </div>
+
+          {/* Search Form Card */}
+          <div className="card-elevated p-6 lg:p-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+              {/* Country Select */}
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-foreground flex items-center gap-2">
+                  <Globe className="w-4 h-4 text-primary" />
+                  Pays d'émission du document
+                </label>
+                <Select value={selectedCountry} onValueChange={setSelectedCountry}>
+                  <SelectTrigger className="h-12 text-base">
+                    <SelectValue placeholder="Sélectionnez votre pays" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {countries.map((country) => (
+                      <SelectItem key={country.id} value={country.id}>
+                        {country.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Document Type Select */}
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-foreground flex items-center gap-2">
+                  <FileText className="w-4 h-4 text-primary" />
+                  Type de document de voyage
+                </label>
+                <Select value={selectedDocument} onValueChange={setSelectedDocument}>
+                  <SelectTrigger className="h-12 text-base">
+                    <SelectValue placeholder="Sélectionnez le type de document" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {travelDocuments.map((doc) => (
+                      <SelectItem key={doc.id} value={doc.id}>
+                        {doc.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+
+            {/* Search Button */}
+            <div className="flex flex-col sm:flex-row gap-3">
+              <Button
+                variant="hero"
+                size="lg"
+                className="flex-1"
+                onClick={handleSearch}
+                disabled={!selectedCountry || !selectedDocument || isLoading}
+              >
+                {isLoading ? (
+                  <>
+                    <Loader2 className="w-5 h-5 animate-spin" />
+                    Recherche en cours...
+                  </>
+                ) : (
+                  <>
+                    <Search className="w-5 h-5" />
+                    Rechercher
+                  </>
+                )}
+              </Button>
+              {hasSearched && (
+                <Button variant="outline" size="lg" onClick={resetSearch}>
+                  Nouvelle recherche
+                </Button>
+              )}
+            </div>
+          </div>
+
+          {/* Results */}
+          {result && (
+            <div className="mt-8 animate-fade-up">
+              <div className={cn(
+                "card-elevated p-6 lg:p-8 border-l-4",
+                result.visaRequired ? "border-l-accent" : "border-l-success"
+              )}>
+                {/* Visa Status Header */}
+                <div className="flex items-start gap-4 mb-6">
+                  <div className={cn(
+                    "w-14 h-14 rounded-full flex items-center justify-center shrink-0",
+                    result.visaRequired ? "bg-accent/10" : "bg-success/10"
+                  )}>
+                    {result.visaRequired ? (
+                      <AlertCircle className="w-7 h-7 text-accent" />
+                    ) : (
+                      <CheckCircle className="w-7 h-7 text-success" />
+                    )}
+                  </div>
+                  <div>
+                    <h3 className="font-display text-2xl font-bold text-foreground mb-1">
+                      {result.visaRequired ? "Visa requis" : "Visa non requis"}
+                    </h3>
+                    <p className="text-muted-foreground">
+                      {result.visaRequired
+                        ? "Un visa est nécessaire pour entrer au Sénégal"
+                        : "Vous pouvez entrer au Sénégal sans visa préalable"
+                      }
+                    </p>
+                  </div>
+                </div>
+
+                {/* Details Grid */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {result.visaType && (
+                    <div className="bg-muted/50 rounded-lg p-4">
+                      <p className="text-sm text-muted-foreground mb-1">Type de visa</p>
+                      <p className="font-semibold text-foreground">{result.visaType}</p>
+                    </div>
+                  )}
+                  {result.maxStayDays && (
+                    <div className="bg-muted/50 rounded-lg p-4">
+                      <p className="text-sm text-muted-foreground mb-1">Durée maximale de séjour</p>
+                      <p className="font-semibold text-foreground">{result.maxStayDays} jours</p>
+                    </div>
+                  )}
+                </div>
+
+                {/* Additional Documents */}
+                {result.additionalDocuments && result.additionalDocuments.length > 0 && (
+                  <div className="mt-6">
+                    <h4 className="font-semibold text-foreground mb-3">Documents complémentaires requis</h4>
+                    <ul className="space-y-2">
+                      {result.additionalDocuments.map((doc, index) => (
+                        <li key={index} className="flex items-center gap-2 text-muted-foreground">
+                          <div className="w-1.5 h-1.5 rounded-full bg-secondary shrink-0" />
+                          {doc}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+
+                {/* Remarks */}
+                {result.remarks && (
+                  <div className="mt-6 p-4 bg-secondary/10 rounded-lg border border-secondary/20">
+                    <p className="text-sm text-foreground">
+                      <span className="font-semibold">Note : </span>
+                      {result.remarks}
+                    </p>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    </section>
+  );
+};
+
+export default VisaSearchForm;

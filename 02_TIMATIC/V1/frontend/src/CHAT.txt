@@ -1,0 +1,120 @@
+Je veux passer maintenant au CRUD frondend de la table regime:
+Pour l'ajout et l'edition, afficher touts les nomDocument de la table document et tous les nomCategorie de la table categorie avec des case a cocher pour les selectionner.
+Pouvoir selectionner (cocher) pour inserer et decocher pour modifier plusieurs documents et categories pour un regime.
+Mais pour la nationalite, afficher un menu deroulant pour selectionner une seule nationalite.
+Possibilite de suppression multiple d'un regime avec confirmation avant suppression. 
+
+
+model Regime {
+  id            Int     @id @default(autoincrement())
+  nomRegime     String
+  descRegime    String
+  objetRegime   String  @db.LongText
+  documentId    Int
+  categorieId   Int
+  nationaliteId Int
+
+  document      Document    @relation(fields: [documentId], references: [id])
+  categorie     Categorie   @relation(fields: [categorieId], references: [id])
+  nationalite   Nationalite @relation(fields: [nationaliteId], references: [id])
+}
+
+#############################################    #################################
+Je veux modifier entierement la table categorie ainsi que son CRUD backend et frontend.
+Table categorie(id, nomCategorie, descCategorie, objetCategorie(LONGTEXT), documentId[], nationaliteId[])
+Table nationalite(id, nomPays, codePays, nationaliteFr, nationaliteEn)
+Table document(id, nomDocument, sigleDocument, descDocument)
+NB:
+- Les tables documentId et nationaliteId sont en relation avec la table categorie par ses clé égtrangere
+- Lors de l'ajout et la modification, afficher tous les nomDocument de la table document avec des case a cocher multiple,
+afficher tous les nationaliteFr de la table nationalite en option select multiple comme l'indique la capture d'image,
+- Utiliser le meme formulaire pour l'insertion et la modification 
+- Dans le formulaire d'insertion et modification, utiliser summernote pour l'attribut objetCategorie(LONGTEXT)
+- Empecher egalement la duplication meme documentId pour la meme nationaliteId. Autrement pour chaque docuemnt d'une nationalite doit appartenir a une seule categorie,
+Un meme documentId pour une nationaliteId doit etre enregistrer une seule fois dans la table categorie
+- Le tableau des donnees en dessous du formulaire d'insertion
+
+aff
+Je veux passer maintenant au CRUD frondend de la table regime:
+Pour l'ajout et l'edition, afficher touts les nomDocument de la table document et tous les nomCategorie de la table categorie avec des case a cocher pour les selectionner.
+Pouvoir selectionner (cocher) pour inserer et decocher pour modifier plusieurs documents et categories pour un regime.
+Mais pour la nationalite, afficher un menu deroulant pour selectionner une seule nationalite.
+Possibilite de suppression multiple d'un regime avec confirmation avant suppression. 
+
+############## AUTHENTIFICATION - GESTION USERS #############################
+#### BACKEND
+Je veux passer maintenant a la gestion des utilisateurs de maniere securisée:
+- Inscription de nouvels utilisateurs grace a la table users(id, prenom, nom, contact, roleId, serviceId, username, password,  active, passwordLastChanged(datetime:current_timestamp()), forcePasswordChange(tinyint(1)))
+- Authentification des utilisateurs: connexion reussie si les criteres suivantes sont respectées:
+   . login et password correctes;
+   . active = 1 ou true;
+   . forcePasswordChange = 0 (false)
+NB: 
+- Les tables roles et services sont en relations avec la atble users grace aux attributs serviceId et roleId qui sont des clés etrangeres dans la table users;
+- En cas active = false (0), refuser la connexion et envoyer un message "Compte désactivé, veillez contacter l'administrateur"
+- En cas forcePasswordChange = true (1), refuser la connexion et envoyer un message "Delai expiré, changement de mot de passe obligatoire"
+- Obligation de changer son password tous les 90 jours (expiration du delai et forcePasswordChange = true (1))
+- Informer a l'utilisateur a l'approche de l'expiration (a 15 jours de l'expiration) du password
+- Permettre a l'ADMIN (users.role.nomRole='ADMIN') de faire le CRUD de la table users:
+  . Activer et desactiver un compte,
+  . Modifier un password utilisateur de la table users,
+  . Editer les donnees utilisateurs de la table users,
+  . Supprimer des utilisateurs de la table users
+- Se referer a certains fichiers du backend ci dessous
+
+Endpoint backend authentification:
+- API: localhost:5000/api/auth
+router.post("/register", authController.register);
+router.post("/login", authController.login);
+router.post("/refresh", authController.refresh);
+Autres Endpoint backend:
+- roles: localhost:5000/api/roles
+- services: localhost:5000/api/services
+- users: localhost:5000/api/users
+
+TEST CONNEXION:
+- ADMIN: username=admin/mot de passe: password
+- USER: username=user1/mot de passe: password
+- USER: username=user2/mot de passe: password
+
+
+
+############################## REGISTER FONTEND  ##################################### 
+Je veux permettre a l'ADMIN (role='ADMIN') d'editer les donnees de la table user. Tous les attributs sauf le password grace a un bouton 'Editer' qui ouvre un dialog modal et toast alert pour toutes les actions
+
+Je veux permettre a l'ADMIN (role='ADMIN') de modifier le password de tout utilisateur de la table user grace a une icone Password qui ouvre un formulaire dialog modal avec les champs:
+- Un champ Username de l'utilisateur (en readonly),
+- Un champ Nouveau Password,
+- Un champ Confirm Password.
+Des alertNotify ou toast pour toutes les actions
+
+####
+Je veux aussi dans le header ou navbar, afficher:
+- prenom, nom et role de l'utilisateur connecté ainsi que le bouton 'Deconnexion' pour se deconnecter;
+- Les pages AdminDashboard.tsx, AdminGestionUsers.tsx, Register.tsx accessibles uniquement aux utilisateurs avec  role='ADMIN' 
+- Les pages Documents, Categories, Nationalites et Deconnexion a tous les utilisateurs connectés
+- Les page Index, Services, FAQ, Contact, About et Connexion aux utilisateurs non connectés
+
+En se basant aux fichier forntend ci-dessous, merci:
+1) Modifier la pages/Register.tsx et de l'adapter au backend:
+ - Dans le formulaire Register.tsx,
+ - Dans le formulaire, l'attribut roleId et serviceId sont recuperés par option select dans lesquels sont affichés nomRole (de la table role) et nomService (de la table service) depuis la base de donnees,
+- Ajouter un champ password confirm
+- Ajouter un messade d'alerte alertNotify en cas de succes ou d'echec,
+- Se rediger vers la page Login.tsx en cas de succes
+- Actuelle Table users(id, prenom, nom, contact, role, service_id, username, password,  active, password_last_changed(datetime:current_timestamp()), force_password_change(tinyint(1)))
+
+################# LOGIN FONTEND ####################
+Maintenat je veux ameliorer l'authentification coté pour l'adapter au backend, en corrigeant si necessaire certains fichiers du frontend
+- authentification acceptée si l'attribut active=1 et l'attribut force_password_change=1, en plus de username et password correctes,
+- Indiquer a l'utilisateur "Compte désactivé; veuillez contacter l'administrateur si l'attribut active=0, par un message warning
+- Indiquer a l'utilisateur "Mot de passe expiré, merci de le changer pour continuer" si l'attribut force_password_change=0, par un message warning, et lui rediriger vers le formulaire UserChangePassword.jsx
+
+##### FRONTEND
+- Dans le formulaire Register.jsx,
+ - Dans le formulaire, l'attribut role est recuperé par option select du nom_role depuis la table roles(localhost:8085/api/roles),
+ - Dans le formulaire, l'attribut service_id(clé étrangers de la table services) est recuperé par option select (en afficher dans le select les nom_service depuis la table services: localhost:8085/api/services) ,
+- Supprimer l'attribut email,
+- Ajouter un password confirm
+- Ajouter un messade d'alerte en cas de succes ou d'echec,
+- Se rediger vers la page Login.jsx en cas de succes

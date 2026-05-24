@@ -1,0 +1,235 @@
+/* @tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Source+Sans+3:wght@300;400;500;600;700&display=swap'); */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Primary: Deep Institutional Green */
+    --primary: 160 45% 22%;
+    --primary-foreground: 45 100% 98%;
+    
+    /* Secondary: Warm Gold */
+    --secondary: 42 87% 55%;
+    --secondary-foreground: 160 45% 15%;
+    
+    /* Background: Warm Cream */
+    --background: 40 33% 98%;
+    --foreground: 200 15% 15%;
+    
+    /* Card: Clean White with warmth */
+    --card: 0 0% 100%;
+    --card-foreground: 200 15% 15%;
+    
+    /* Popover */
+    --popover: 0 0% 100%;
+    --popover-foreground: 200 15% 15%;
+    
+    /* Muted: Soft sage */
+    --muted: 160 15% 94%;
+    --muted-foreground: 200 10% 45%;
+    
+    /* Accent: Terracotta warmth */
+    --accent: 20 60% 55%;
+    --accent-foreground: 0 0% 100%;
+    
+    /* Destructive */
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
+    
+    /* Borders & inputs */
+    --border: 160 15% 85%;
+    --input: 160 15% 90%;
+    --ring: 160 45% 35%;
+    
+    --radius: 0.5rem;
+    
+    /* Custom institutional tokens */
+    --hero-overlay: 160 45% 10%;
+    --gold-shimmer: 42 87% 60%;
+    --success: 160 60% 40%;
+    --warning: 42 90% 50%;
+    
+    /* Sidebar */
+    --sidebar-background: 160 30% 12%;
+    --sidebar-foreground: 45 100% 98%;
+    --sidebar-primary: 42 87% 55%;
+    --sidebar-primary-foreground: 160 45% 15%;
+    --sidebar-accent: 160 35% 18%;
+    --sidebar-accent-foreground: 45 100% 98%;
+    --sidebar-border: 160 25% 20%;
+    --sidebar-ring: 42 87% 55%;
+  }
+
+  .dark {
+    --primary: 160 45% 45%;
+    --primary-foreground: 160 45% 10%;
+    
+    --secondary: 42 80% 50%;
+    --secondary-foreground: 200 15% 10%;
+    
+    --background: 200 15% 8%;
+    --foreground: 40 33% 95%;
+    
+    --card: 200 15% 12%;
+    --card-foreground: 40 33% 95%;
+    
+    --popover: 200 15% 12%;
+    --popover-foreground: 40 33% 95%;
+    
+    --muted: 200 15% 18%;
+    --muted-foreground: 200 10% 60%;
+    
+    --accent: 20 50% 45%;
+    --accent-foreground: 0 0% 100%;
+    
+    --destructive: 0 62% 45%;
+    --destructive-foreground: 0 0% 100%;
+    
+    --border: 200 15% 20%;
+    --input: 200 15% 18%;
+    --ring: 160 45% 50%;
+    
+    --hero-overlay: 160 45% 5%;
+    --sidebar-background: 200 15% 6%;
+    --sidebar-foreground: 40 33% 95%;
+    --sidebar-primary: 42 80% 50%;
+    --sidebar-primary-foreground: 200 15% 10%;
+    --sidebar-accent: 200 15% 12%;
+    --sidebar-accent-foreground: 40 33% 95%;
+    --sidebar-border: 200 15% 15%;
+    --sidebar-ring: 42 80% 50%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    font-family: 'Source Sans 3', system-ui, sans-serif;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Playfair Display', Georgia, serif;
+    @apply font-semibold tracking-tight;
+  }
+}
+
+@layer components {
+  .institutional-gradient {
+    background: linear-gradient(
+      135deg,
+      hsl(var(--primary)) 0%,
+      hsl(160 40% 28%) 50%,
+      hsl(var(--primary)) 100%
+    );
+  }
+
+  .gold-gradient {
+    background: linear-gradient(
+      135deg,
+      hsl(var(--secondary)) 0%,
+      hsl(var(--gold-shimmer)) 50%,
+      hsl(var(--secondary)) 100%
+    );
+  }
+
+  .hero-overlay {
+    background: linear-gradient(
+      to bottom,
+      hsl(var(--hero-overlay) / 0.7) 0%,
+      hsl(var(--hero-overlay) / 0.5) 50%,
+      hsl(var(--hero-overlay) / 0.8) 100%
+    );
+  }
+
+  .card-institutional {
+    @apply bg-card border border-border rounded-lg shadow-sm;
+    box-shadow: 
+      0 1px 3px hsl(var(--primary) / 0.04),
+      0 4px 6px hsl(var(--primary) / 0.02);
+  }
+
+  .card-elevated {
+    @apply bg-card rounded-xl;
+    box-shadow: 
+      0 4px 6px -1px hsl(var(--primary) / 0.08),
+      0 10px 20px -5px hsl(var(--primary) / 0.05);
+  }
+
+  .text-gradient {
+    @apply bg-clip-text text-transparent;
+    background-image: linear-gradient(
+      135deg,
+      hsl(var(--secondary)) 0%,
+      hsl(var(--gold-shimmer)) 100%
+    );
+  }
+
+  .animate-fade-up {
+    animation: fadeUp 0.6s ease-out forwards;
+  }
+
+  .animate-fade-in {
+    animation: fadeIn 0.4s ease-out forwards;
+  }
+
+  .animate-slide-in {
+    animation: slideIn 0.5s ease-out forwards;
+  }
+}
+
+@layer utilities {
+  .font-display {
+    font-family: 'Playfair Display', Georgia, serif;
+  }
+
+  .font-sans {
+    font-family: 'Source Sans 3', system-ui, sans-serif;
+  }
+}
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
